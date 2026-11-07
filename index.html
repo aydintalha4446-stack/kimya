@@ -1,164 +1,152 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kimya Laboratuvarı Bilgi Yarışması</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #38bdf8;
-            --text-color: #f8fafc;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-        h1 { margin-bottom: 1.5rem; font-size: 1.5rem; color: var(--accent-color); }
-        .question-img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            background: #334155;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        button.option-btn {
-            background-color: #334155;
-            color: var(--text-color);
-            border: none;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-        button.option-btn:hover { background-color: #475569; transform: translateY(-2px); }
-        button.option-btn.correct { background-color: var(--success-color); }
-        button.option-btn.wrong { background-color: var(--error-color); }
-        #feedback { margin-top: 1rem; font-weight: bold; min-height: 1.5rem; }
-        .hidden { display: none; }
-        #next-btn {
-            margin-top: 1.5rem;
-            background-color: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>Kimya Lab Araçları Testi</h1>
-        <div id="quiz-box">
-            <img id="q-image" class="question-img" src="" alt="Lab Cihazı">
-            <p id="q-text" style="margin-bottom: 1rem; font-weight: 500;"></p>
-            <div class="options" id="options-container"></div>
-        </div>
-        <div id="feedback"></div>
-        <button id="next-btn" class="hidden" onclick="nextQuestion()">Sonraki Soru</button>
-    </div>
-
-    <script>
-        const quizData = [
-            {
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Beakers.jpg/640px-Beakers.jpg",
-                question: "Görselde verilen laboratuvar malzemesinin adı nedir?",
-                options: ["Beherglas (Beaker)", "Balon Joje"],
-                answer: 0
-            },
-            {
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Volumetric_Flasks.jpg/640px-Volumetric_Flasks.jpg",
-                question: "Bu hassas ölçüm ve çözelti hazırlama cam malzemesi hangisidir?",
-                options: ["Erlenmayer", "Balon Joje"],
-                answer: 1
-            }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-
-        function loadQuiz() {
-            document.getElementById("feedback").innerText = "";
-            document.getElementById("next-btn").classList.add("hidden");
-            
-            const currentQ = quizData[currentQuestion];
-            document.getElementById("q-image").src = currentQ.image;
-            document.getElementById("q-text").innerText = currentQ.question;
-
-            const optionsContainer = document.getElementById("options-container");
-            optionsContainer.innerHTML = "";
-
-            currentQ.options.forEach((opt, index) => {
-                const btn = document.createElement("button");
-                btn.className = "option-btn";
-                btn.innerText = opt;
-                btn.onclick = () => selectOption(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function selectOption(selectedIndex, buttonElement) {
-            const currentQ = quizData[currentQuestion];
-            const buttons = document.querySelectorAll(".option-btn");
-            
-            // Tüm butonları devre dışı bırak
-            buttons.forEach(b => b.onclick = null);
-
-            if (selectedIndex === currentQ.answer) {
-                buttonElement.classList.add("correct");
-                document.getElementById("feedback").innerText = "Tebrikler, Doğru! 🎉";
-                document.getElementById("feedback").style.color = "var(--success-color)";
-                score++;
-            } else {
-                buttonElement.classList.add("wrong");
-                buttons[currentQ.answer].classList.add("correct");
-                document.getElementById("feedback").innerText = "Yanlış cevap! ❌";
-                document.getElementById("feedback").style.color = "var(--error-color)";
-            }
-
-            if (currentQuestion < quizData.length - 1) {
-                document.getElementById("next-btn").classList.remove("hidden");
-            } else {
-                setTimeout(() => {
-                    document.getElementById("quiz-box").innerHTML = `<h2>Test Bitti!</h2><p>Toplam Skorun: ${score} / ${quizData.length}</p>`;
-                    document.getElementById("feedback").innerText = "Harika iş çıkardın!";
-                }, 1000);
-            }
-        }
-
-        function nextQuestion() {
-            currentQuestion++;
-            loadQuiz();
-        }
-
-        loadQuiz();
-    </script>
-</body>
-</html>
+const quizData = [
+    {
+        image: "images/beherglas.jpg",
+        question: "Görselde verilen ve sıvı maddelerin karıştırılması, saklanması ve ısıtılması amacıyla kullanılan malzeme nedir?",
+        options: ["Beherglas", "Erlenmayer"],
+        answer: 0
+    },
+    {
+        image: "images/erlenmayer.jpg",
+        question: "Titrasyon ve çözelti hazırlama işlemlerinde kullanılan, konik şekilli cam malzeme hangisidir?",
+        options: ["Cam Balon", "Erlenmayer"],
+        answer: 1
+    },
+    {
+        image: "images/cambalon.jpg",
+        question: "Çözelti hazırlama, saklama, ısıtma ve kaynatma amacıyla kullanılan yuvarlak tabanlı cam malzeme nedir?",
+        options: ["Cam Balon", "Balon Joje"],
+        answer: 0
+    },
+    {
+        image: "images/balonjoje.jpg",
+        question: "Boyun kısmında ölçü çizgisi bulunan ve derişimi belli çözeltilerin hazırlanmasında kullanılan malzeme hangisidir?",
+        options: ["Mezür", "Balon Joje"],
+        answer: 1
+    },
+    {
+        image: "images/ayrimahunisi.jpg",
+        question: "Heterojen sıvı-sıvı karışımların ayrılmasında kullanılan musluklu cam malzeme nedir?",
+        options: ["Ayırma Hunisi", "Huni"],
+        answer: 0
+    },
+    {
+        image: "images/mezur.jpg",
+        question: "Sıvıların hacmini hassas olmayan şekilde ölçmek için kullanılan dereceli silindir hangisidir?",
+        options: ["Büret", "Dereceli Silindir (Mezür)"],
+        answer: 1
+    },
+    {
+        image: "images/sogutucu.jpg",
+        question: "Isıtmayla buharlaşan çözücünün gaz fazından sıvı faza döndürülerek geri kazanılmasını sağlayan malzeme nedir?",
+        options: ["Soğutucu", "Pipet"],
+        answer: 0
+    },
+    {
+        image: "images/huni.jpg",
+        question: "Süzme işleminde ve sıvıların dar ağızlı kaplara boşaltılmasında kullanılan malzeme hangisidir?",
+        options: ["Huni", "U Borusu"],
+        answer: 0
+    },
+    {
+        image: "images/uborusu.jpg",
+        question: "Tepkime ortamları arasındaki bağlantıyı kurmada kullanılan U şeklindeki boru nedir?",
+        options: ["Büret", "U Borusu"],
+        answer: 1
+    },
+    {
+        image: "images/buret.jpg",
+        question: "Titrasyon işleminde derişimi bilinmeyen maddelerin derişimini tespit etmek amacıyla kullanılan musluklu dereceli boru nedir?",
+        options: ["Büret", "Pipet"],
+        answer: 0
+    },
+    {
+        image: "images/pipet.jpg",
+        question: "Sıvıların hacmini hassas bir biçimde ölçmek ve aktarmak amacıyla kullanılan ince cam boru hangisidir?",
+        options: ["Pipet", "Baget"],
+        answer: 0
+    },
+    {
+        image: "images/termometre.jpg",
+        question: "Sıcaklığı ölçmek için kullanılan laboratuvar malzemesi nedir?",
+        options: ["Termometre", "Puar"],
+        answer: 0
+    },
+    {
+        image: "images/baget.jpg",
+        question: "Maddeleri karıştırmak için kullanılan cam çubuk nedir?",
+        options: ["Baget", "Spatül"],
+        answer: 0
+    },
+    {
+        image: "images/deneytupu.jpg",
+        question: "Maddelerin karıştırılması, ısıtılması, soğutulması amacıyla kullanılan küçük cam tüp nedir?",
+        options: ["Deney Tüpü", "Havan"],
+        answer: 0
+    },
+    {
+        image: "images/havan.jpg",
+        question: "Katı maddeleri ezmek, toz haline getirmek amacıyla kullanılan araç nedir?",
+        options: ["Havan", "İspirto Ocağı"],
+        answer: 0
+    },
+    {
+        image: "images/damlalik.jpg",
+        question: "Küçük hacimlerdeki sıvıları aktarmak için kullanılan malzeme hangisidir?",
+        options: ["Puar", "Damlalık"],
+        answer: 1
+    },
+    {
+        image: "images/spatul.jpg",
+        question: "Toz halindeki ya da küçük parçalı katıları almak için kullanılan kaşık benzeri araç nedir?",
+        options: ["Spatül", "Piset"],
+        answer: 0
+    },
+    {
+        image: "images/piset.jpg",
+        question: "Genellikle saf su, bazı durumlarda da yıkama çözeltisi için kullanılan plastik şişe nedir?",
+        options: ["Piset (Yıkama Şişesi)", "Damlalık"],
+        answer: 0
+    },
+    {
+        image: "images/puar.jpg",
+        question: "Pipetlerin arkasına takılarak sıvı veya çözelti çekilmesinde kullanılan kauçuk aparat nedir?",
+        options: ["Puar", "Kıskaç"],
+        answer: 0
+    },
+    {
+        image: "images/saatcami.jpg",
+        question: "Katı maddelerin ısıtma ve kurutma işlemlerinde kullanılan içbükey cam nedir?",
+        options: ["Saat Camı", "Amyant Tel"],
+        answer: 0
+    },
+    {
+        image: "images/ispirtoocagi.jpg",
+        question: "Isıtma işleminde kullanılan küçük ocak nedir?",
+        options: ["Bünzen Beki", "İspirto Ocağı"],
+        answer: 1
+    },
+    {
+        image: "images/bunzenbeki.jpg",
+        question: "Isıtma ve yakma işlemlerinde kullanılan gazlı bek sistemi nedir?",
+        options: ["Bünzen Beki", "Üç Ayak"],
+        answer: 0
+    },
+    {
+        image: "images/ucayak.jpg",
+        question: "Deney düzeneklerinin kurulması ve sabitlenmesi amacıyla kullanılan üç ayaklı metal destek nedir?",
+        options: ["Spor (Destek)", "Üç Ayak"],
+        answer: 1
+    },
+    {
+        image: "images/kiskac.jpg",
+        question: "Çeşitli laboratuvar malzemelerini spora sabitlemek için kullanılan aparat nedir?",
+        options: ["Kıskaç", "Amyant Tel"],
+        answer: 0
+    },
+    {
+        image: "images/amyanttel.jpg",
+        question: "Bünzen beki aleviyle ısıtma işlemlerinde cam malzemenin alevle doğrudan ilişkisini kesen tel kafes nedir?",
+        options: ["Amyant Tel", "Süzgeç Kağıdı"],
+        answer: 0
+    }
+];
